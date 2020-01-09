@@ -3,6 +3,8 @@ import numpy as np
 import datetime
 from docx import Document
 from docx.shared import Inches, Cm, Pt
+
+from GitHub.functions import write_markdown_paragraph
 from functions import *
 
 balance_over_chps = False    # do we want to balance over chapters?
@@ -120,13 +122,12 @@ for i in UIDs:
     p = prepare_paragraph(docNL)
     p.paragraph_format.space_after = Pt(12)
     p.add_run(str(q_num) + '.\t')
-    p.add_run(question_data.loc[0,'Q_NL'])
-
+    write_markdown_paragraph(p, question_data.loc[0,'Q_NL'])
 
     p = prepare_paragraph(docEN)
     p.paragraph_format.space_after = Pt(12)
     p.add_run(str(q_num) + '.\t')
-    p.add_run(question_data.loc[0,'Q_EN'])
+    write_markdown_paragraph(p, question_data.loc[0,'Q_EN'])
 
     ans_order = [0, 1, 2, 3]
     if question_data.loc[0,'SHUFFLE_ANSWERS'] == 1:
@@ -143,26 +144,34 @@ for i in UIDs:
 
 
     p = prepare_paragraph(docNL)
-    p.add_run(str('A.\t' + question_data[ans_varsNL[ans_order[0]]][0]))
+    p.add_run(str('A.\t'))
+    write_markdown_paragraph(p, question_data[ans_varsNL[ans_order[0]]][0])
     p = prepare_paragraph(docEN)
-    p.add_run(str('A.\t' + question_data[ans_varsEN[ans_order[0]]][0]))
+    p.add_run(str('A.\t'))
+    write_markdown_paragraph(p, question_data[ans_varsEN[ans_order[0]]][0])
 
     p = prepare_paragraph(docNL)
-    p.add_run(str('B.\t' + question_data[ans_varsNL[ans_order[1]]][0]))
+    p.add_run(str('B.\t'))
+    write_markdown_paragraph(p, question_data[ans_varsNL[ans_order[1]]][0])
     p = prepare_paragraph(docEN)
-    p.add_run(str('B.\t' + question_data[ans_varsEN[ans_order[1]]][0]))
+    p.add_run(str('B.\t'))
+    write_markdown_paragraph(p, question_data[ans_varsEN[ans_order[1]]][0])
 
     p = prepare_paragraph(docNL)
-    p.add_run(str('C.\t' + question_data[ans_varsNL[ans_order[2]]][0]))
+    p.add_run(str('C.\t'))
+    write_markdown_paragraph(p, question_data[ans_varsNL[ans_order[2]]][0])
     p = prepare_paragraph(docEN)
-    p.add_run(str('C.\t' + question_data[ans_varsEN[ans_order[2]]][0]))
+    p.add_run(str('C.\t'))
+    write_markdown_paragraph(p, question_data[ans_varsEN[ans_order[2]]][0])
 
     p = prepare_paragraph(docNL)
     p.paragraph_format.space_after = Pt(24)
-    p.add_run(str('D.\t' + question_data[ans_varsNL[ans_order[3]]][0]))
+    p.add_run(str('D.\t'))
+    write_markdown_paragraph(p, question_data[ans_varsNL[ans_order[3]]][0])
     p = prepare_paragraph(docEN)
     p.paragraph_format.space_after = Pt(24)
-    p.add_run(str('D.\t' + question_data[ans_varsEN[ans_order[3]]][0]))
+    p.add_run(str('D.\t'))
+    write_markdown_paragraph(p, question_data[ans_varsEN[ans_order[3]]][0])
 
 docNL.save('tentamen_NL_v1.docx')
 docEN.save('tentamen_EN_v1.docx')
