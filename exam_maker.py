@@ -1,8 +1,8 @@
 import pandas as pd
 import numpy as np
 import datetime
+import os
 from docx import Document
-from docx.shared import Inches, Cm, Pt
 from functions import *
 
 balance_over_chps = False    # do we want to balance over chapters?
@@ -16,6 +16,9 @@ UIDs = []  # Use these exact UIDs
 
 RIR_cols = ['RIR_1617_1', 'RIR_1718_1', 'RIR_1718_2', 'RIR_1819_1', 'RIR_1819_2', 'RIR_1920_1']
 q_file = 'Tentamenvragen.xlsx'
+
+if not os.path.isdir("output"):
+    os.mkdir("output")
 
 datafile = pd.read_excel(q_file, index_col=None)
 datafile = datafile.sort_values(['CHP'])
@@ -81,7 +84,7 @@ print("UIDs", UIDs)
 UIDs_v2 = shift(UIDs, split_q)
 print(UIDs_v2)
 
-with open('log.txt', 'w') as file_handler:
+with open('output/log.txt', 'w') as file_handler:
     d = datetime.datetime.now()
     file_handler.write('Exam generated on {date:%Y-%m-%d} at {date:%H:%M:%S}\n'.format( date=datetime.datetime.now() ))
     file_handler.write("UIDs included:\n")
@@ -164,8 +167,8 @@ for i in UIDs:
     p.add_run(str('D.\t'))
     write_markdown_paragraph(p, question_data[ans_varsEN[ans_order[3]]][0])
 
-docNL.save('tentamen_NL_v1.docx')
-docEN.save('tentamen_EN_v1.docx')
+docNL.save('output/tentamen_NL_v1.docx')
+docEN.save('output/tentamen_EN_v1.docx')
 
 
 
@@ -223,12 +226,11 @@ for i in UIDs_v2:
     p.add_run(str('D.\t'))
     write_markdown_paragraph(p, question_data[ans_varsEN[ans_order[3]]][0])
 
-docNL.save('tentamen_NL_v2.docx')
-docEN.save('tentamen_EN_v2.docx')
+docNL.save('output/tentamen_NL_v2.docx')
+docEN.save('output/tentamen_EN_v2.docx')
 
 df = pd.DataFrame(answer_doc)
-filepath = 'answer_sheet.xlsx'
-df.to_excel(filepath, index=False, header=False)
+df.to_excel('output/answer_sheet.xlsx', index=False, header=False)
 
 
 print(answer_doc)
