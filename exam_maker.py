@@ -3,30 +3,24 @@ import numpy as np
 import datetime
 from docx import Document
 from docx.shared import Inches, Cm, Pt
-
-from GitHub.functions import write_markdown_paragraph
 from functions import *
 
 balance_over_chps = False    # do we want to balance over chapters?
-n_questions = 50
+n_questions = 50  # number of questions to sample
 split_q = 21  # Question used to split V1 and V2
+max_asked = 2  # remove questions that have already been asked more than max_asked times
+
 ch_to_include = [1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16]
-# ch_to_include = [1,5,12,13,11,15]
-
-# UIDs_to_skip = [2, 108, 109, 111, 100, 173, 152, 113, 115, 11, 119, 120, 159, 149, 14, 130, 129, 67, 163, 161, 160, 132, 22, 134, 184, 179, 25, 142, 28, 27, 168, 32, 30, 81, 148, 107, 96, 172, 36, 139, 44, 43, 138, 45, 49, 91, 92, 143, 192]
 UIDs_to_skip = []
+UIDs = []  # Use these exact UIDs
+
 RIR_cols = ['RIR_1617_1', 'RIR_1718_1', 'RIR_1718_2', 'RIR_1819_1', 'RIR_1819_2', 'RIR_1920_1']
+q_file = 'Tentamenvragen.xlsx'
 
-# Use these exact UIDs
-UIDs = []
-
-
-datafile = pd.read_excel('Tentamenvragen.xlsx', index_col=None)
+datafile = pd.read_excel(q_file, index_col=None)
 datafile = datafile.sort_values(['CHP'])
 datafile = datafile[datafile['CHP'].isin(ch_to_include)]
 datafile = datafile[~datafile['Q_UID'].isin(UIDs_to_skip)]
-
-
 
 # how many times has this question been asked?
 datafile['num_been_asked'] = np.nansum(np.isfinite(datafile[RIR_cols]), axis=1)
@@ -38,10 +32,7 @@ print(str(max(datafile['num_been_asked'])-4) + " times asked: " + str(np.sum(dat
 
 
 if len(UIDs) == 0:
-    # remove questions that have already been asked more than 2 times
-    datafile = datafile[datafile['num_been_asked'] < 1]
-
-
+    datafile = datafile[datafile['num_been_asked'] < max_asked]
     uniqueQ = np.unique(datafile['Q_ID'])
     uniqueQ = uniqueQ[~np.isnan(uniqueQ)]
 
@@ -66,7 +57,7 @@ if len(UIDs) == 0:
         # questions = questions[~np.isnan(questions)]
         # orderedQ = sorted(questions, key=lambda x: uniqueQ.tolist().index(x))
         orderedQ = questions
-    else: # we just sample randomly over all Q_IDs
+    else:  # we just sample randomly over all Q_IDs
         questions = np.random.choice(uniqueQ, n_questions, replace=False)
         questions = questions[~np.isnan(questions)]
         orderedQ = sorted(questions, key=lambda x: uniqueQ.tolist().index(x))

@@ -16,6 +16,7 @@ def prepare_paragraph(doc):
     tab_stop = tab_stops.add_tab_stop(Cm(1.5))
     return(p)
 
+
 def write_markdown_paragraph(p, text):
     q_wordlist = text.split()
 
